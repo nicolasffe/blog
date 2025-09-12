@@ -42,4 +42,3 @@ app.delete('/posts/:id', async (req, res) => {
 app.listen(4000, () => {
   console.log('Listening on 4000');
 });
-
