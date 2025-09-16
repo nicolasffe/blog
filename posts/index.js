@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
+const axios = require('axios');
 
 const prisma = new PrismaClient();
 const app = express();
@@ -24,6 +25,13 @@ app.post('/posts', async (req, res) => {
   const post = await prisma.post.create({
     data: { title }
   });
+
+  await axios.post('http;//localhost:4005/events', {
+    type: 'PostCreated',
+    data: {
+      id, title
+    }
+  })
 
   res.status(201).send(post);
 });
