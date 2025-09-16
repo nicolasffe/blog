@@ -11,17 +11,15 @@ app.post('/events', async (req, res) => {
     console.log('Evento Recebido (Moderation):', type);
 
     if (type === 'CommentCreated') {
-        // Lógica de moderação: rejeita comentários com a palavra "orange"
         const status = data.content.includes('orange') ? 'rejected' : 'approved';
 
-        // Emite o evento de moderação
         await axios.post('http://localhost:4005/events', {
             type: 'CommentModerated',
             data: {
                 id: data.id,
                 postId: data.postId,
                 status,
-                content: data.content // repassa o conteúdo
+                content: data.content
             }
         });
     }

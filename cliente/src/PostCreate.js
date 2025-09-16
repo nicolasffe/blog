@@ -3,18 +3,17 @@ import axios from "axios";
 
 export default () => {
   const [title, setTitle] = useState("");
-  const [error, setError] = useState(""); // Novo estado para guardar o erro
+  const [error, setError] = useState("");
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    setError(""); // Limpa erros anteriores
+    setError("");
 
     if (!title.trim()) {
       setError("O título não pode estar vazio.");
       return;
     }
 
-    // Adicionado try...catch para capturar o erro
     try {
       await axios.post("http://localhost:4000/posts", {
         title,

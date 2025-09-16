@@ -10,7 +10,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// --- ROTAS ---
 
 // CRIAR COMENTÁRIO
 app.post('/posts/:id/comments', async (req, res) => {

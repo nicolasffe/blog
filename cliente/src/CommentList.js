@@ -2,7 +2,6 @@
 import React from 'react';
 import axios from 'axios';
 
-// Recebe as propriedades, incluindo newCommentId
 export default ({ comments, onAction, newCommentId }) => {
 
   const handleDeleteComment = async (commentId) => {
@@ -16,7 +15,6 @@ export default ({ comments, onAction, newCommentId }) => {
   };
 
   const renderedComments = comments.map((comment) => {
-    // Lógica da animação para o novo comentário
     const isNew = comment.id === newCommentId;
     const commentClass = `comment-item ${isNew ? 'comment-item-new' : ''}`;
 

@@ -6,7 +6,6 @@ const axios = require('axios');
 const app = express();
 app.use(bodyParser.json());
 
-// Armazena todos os eventos que já aconteceram
 const events = [];
 
 app.post('/events', (req, res) => {
@@ -22,7 +21,6 @@ app.post('/events', (req, res) => {
   res.send({ status: 'OK' });
 });
 
-// Rota para fornecer todos os eventos para serviços que ficaram offline
 app.get('/events', (req, res) => {
   res.send(events);
 });

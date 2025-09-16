@@ -3,7 +3,6 @@ import axios from "axios";
 import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
-// Receba as novas propriedades aqui
 export default ({ posts, onAction, setNewCommentId, newCommentId }) => {
   const handleDeletePost = async (postId) => {
     await axios.delete(`http://localhost:4000/posts/${postId}`);

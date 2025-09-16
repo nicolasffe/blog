@@ -1,22 +1,23 @@
+// cliente/src/App.js
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import Navbar from "./Navbar";
 import PostCreate from "./PostCreate";
 import PostList from "./PostList";
+import Sidebar from "./Sidebar";
 import "./App.css";
 
 export default () => {
   const [posts, setPosts] = useState({});
-  const [newCommentId, setNewCommentId] = useState(null); // <-- ADICIONE ESTA LINHA
+  const [newCommentId, setNewCommentId] = useState(null);
 
   const fetchPosts = useCallback(async () => {
     const res = await axios.get("http://localhost:4002/posts");
     setPosts(res.data);
-
-    // Limpa o ID do novo comentário após um tempo para não animar novamente
     if (newCommentId) {
       setTimeout(() => setNewCommentId(null), 1500);
     }
-  }, [newCommentId]); // Adicione newCommentId às dependências
+  }, [newCommentId]);
 
   useEffect(() => {
     fetchPosts();
@@ -29,17 +30,26 @@ export default () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="my-4 text-center">Meu Blog</h1>
-      <PostCreate onAction={refreshPostsAfterAction} />
-      <hr className="my-4" />
-      {/* Passe o estado e a função para o PostList */}
-      <PostList
-        posts={posts}
-        onAction={refreshPostsAfterAction}
-        setNewCommentId={setNewCommentId}
-        newCommentId={newCommentId}
-      />
-    </div>
+    <>
+      <Navbar /> {/* <-- 3. ADICIONE O NAVBAR NO TOPO */}
+      
+      <div className="container">
+        <h1 className="main-title">Aproveite esse blog!</h1>
+        
+        <div className="main-layout">
+          <main className="content-area">
+            <PostCreate onAction={refreshPostsAfterAction} />
+            <hr className="my-4" />
+            <PostList
+              posts={posts}
+              onAction={refreshPostsAfterAction}
+              setNewCommentId={setNewCommentId}
+              newCommentId={newCommentId}
+            />
+          </main>
+          <Sidebar posts={posts} />
+        </div>
+      </div>
+    </>
   );
 };
