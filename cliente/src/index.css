@@ -1,68 +1,144 @@
-/* Corpo da página */
+/* Importação das fontes */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lora:wght@500;700&display=swap');
+
+/* Variáveis de Cor - "Tema Natural" */
+:root {
+  --background: #F8F5F2; /* Off-white quente */
+  --card-background: #FFFFFF;
+  --text-primary: #333333; /* Cinza escuro para texto */
+  --text-secondary: #777777;
+  --accent: #8A9A5B; /* Verde sálvia */
+  --accent-light: #D9EAD3; /* Verde claro para destaques */
+  --border-color: #EAEAEA;
+}
+
+/* Estilização Base */
 body {
-    background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: 'Lato', sans-serif; /* Nova fonte para o corpo */
+  margin: 0;
+  line-height: 1.7;
 }
 
-/* Header */
-header {
-    background-color: #0d6efd;
-    color: white;
-    padding: 1.5rem;
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bold;
+/* Container Principal */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
 }
 
-/* Rodapé */
-footer {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 1rem;
-    margin-top: 2rem;
+/* Tipografia */
+h1, h3 {
+  font-family: 'Lora', serif; /* Nova fonte para títulos */
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+h1.my-4.text-center {
+  font-size: 2.8rem;
+  color: var(--accent);
+  margin-bottom: 3rem;
 }
 
 /* Cards */
 .card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
+  background: var(--card-background);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  padding: 2rem;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+/* Formulários e Inputs */
+.form-control {
+  background-color: var(--background);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(138, 154, 91, 0.2);
 }
 
-/* Títulos dos posts */
-h3 {
-    color: #343a40;
-    font-weight: bold;
-}
-
-/* Comentários */
-.list-group-item {
-    background-color: #f1f3f5;
-    border-radius: 8px;
-    margin-bottom: 4px;
+/* COR DO PLACEHOLDER "ESCREVA ALGO..." */
+.form-control::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.8;
 }
 
 /* Botões */
-.btn-outline-primary {
-    color: #0d6efd;
-    border-color: #0d6efd;
+.btn-success, .btn-primary {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  padding: 12px 24px;
 }
 
-.btn-outline-primary:hover {
-    background-color: #0d6efd;
-    color: #fff;
+.btn-success:hover, .btn-primary:hover {
+  background-color: #7B8A4B; /* Tom mais escuro do verde */
 }
 
-.btn-sm {
-    font-size: 0.85rem;
+/* === ANIMAÇÃO PARA NOVO COMENTÁRIO === */
+@keyframes new-comment-flash {
+  from {
+    background-color: var(--accent-light);
+    transform: scale(1.02);
+  }
+  to {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+
+.comment-item-new {
+  animation: new-comment-flash 1.5s ease-out;
+}
+
+/* Estilo da lista de comentários */
+.comment-item {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+/* =============================================== */
+/* === ESTILOS PARA OS BOTÕES DOS COMENTÁRIOS === */
+/* =============================================== */
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espaço entre os botões */
+}
+
+.btn-comment-action {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 20px; /* Deixa os botões arredondados */
+  transition: all 0.2s ease-in-out;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espaço entre o ícone e o número */
+}
+
+.btn-comment-action:hover {
+  background-color: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px); /* Efeito de elevação */
 }
