@@ -1,39 +1,45 @@
-import React, { useState, useEffect } from "react";
+// cliente/src/PostList.js
+import React from "react";
 import axios from "axios";
 import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
-export default () => {
-  const [posts, setPosts] = useState({});
+export default ({ posts, onAction }) => {
 
-  const fetchPosts = async () => {
-    const res = await axios.get("http://localhost:4000/posts");
-    setPosts(res.data);
+  const handleDeletePost = async (postId) => {
+    await axios.delete(`http://localhost:4000/posts/${postId}`);
+    onAction();
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  const handleLikePost = async (postId) => {
+    await axios.post(`http://localhost:4000/posts/${postId}/like`);
+    onAction();
+  };
 
   const renderedPosts = Object.values(posts).map((post) => {
     return (
-      <div
-        className="card shadow-sm border-0 mb-4"
-        style={{ width: "32%" }}
-        key={post.id}
-      >
+      <div className="card shadow-sm mb-4" key={post.id}>
         <div className="card-body">
-          <h3 className="card-title text-primary">{post.title}</h3>
-          <CommentList postId={post.id} />
-          <CommentCreate postId={post.id} />
+          <h3 className="card-title">{post.title}</h3>
+          <hr/>
+          <CommentList comments={post.comments || []} onAction={onAction} />
+          <CommentCreate postId={post.id} onAction={onAction} />
+          <div className="d-flex justify-content-end align-items-center mt-3">
+              <button onClick={() => handleLikePost(post.id)} className="btn btn-sm btn-outline-primary me-2">
+                ❤️ {post.likes || 0}
+              </button>
+              <button onClick={() => handleDeletePost(post.id)} className="btn btn-sm btn-outline-danger">
+                Deletar Post
+              </button>
+          </div>
         </div>
       </div>
     );
   });
 
   return (
-    <div className="d-flex flex-row flex-wrap justify-content-between">
-      {renderedPosts}
+    <div>
+      {renderedPosts.length > 0 ? renderedPosts : <p>Nenhum post encontrado. Crie o primeiro!</p>}
     </div>
   );
 };

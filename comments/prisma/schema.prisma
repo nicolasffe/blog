@@ -1,3 +1,5 @@
+// comments/prisma/schema.prisma
+
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
@@ -7,9 +9,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// comments/prisma/schema.prisma
 model Comment {
   id        String   @id @default(cuid())
   content   String
   createdAt DateTime @default(now())
   postId    String
+  status    String   @default("pending")
+  likes     Int      @default(0) // GARANTA QUE ESTA LINHA EXISTA
 }

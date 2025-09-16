@@ -7,8 +7,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+
+// posts/prisma/schema.prisma
 model Post {
-  id      String @id @default(cuid())
-  title   String
+  id        String   @id @default(cuid())
+  title     String
   createdAt DateTime @default(now())
+  likes     Int      @default(0) // GARANTA QUE ESTA LINHA EXISTA
 }

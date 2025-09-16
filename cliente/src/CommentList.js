@@ -1,65 +1,43 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+// cliente/src/CommentList.js
+import React from 'react';
+import axios from 'axios';
 
-export default ({ postId }) => {
-  const [comments, setComments] = useState([]);
+export default ({ comments, onAction }) => {
 
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(`http://localhost:4001/posts/${postId}/comments`);
-      setComments(res.data);
-    } catch (err) {
-      console.error("Erro ao buscar comentários:", err);
-    }
+  const handleDeleteComment = async (commentId) => {
+    await axios.delete(`http://localhost:4001/comments/${commentId}`);
+    onAction();
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [postId]);
+  const handleLikeComment = async (commentId) => {
+    await axios.post(`http://localhost:4001/comments/${commentId}/like`);
+    onAction();
+  };
 
-  return (
-    <ul className="list-group list-group-flush mb-3">
-      {comments.map((comment) => (
-        <li
-          key={comment.id}
-          className="list-group-item bg-light d-flex justify-content-between align-items-center rounded mb-1"
-        >
-          {comment.content}
-          <div>
-            <button
-              className="btn btn-sm btn-outline-success me-1"
-              onClick={async () => {
-                try {
-                  await axios.post(
-                    `http://localhost:4001/posts/${postId}/comments/${comment.id}/like`
-                  );
-                  fetchData();
-                } catch (err) {
-                  console.error("Erro ao curtir comentário:", err);
-                }
-              }}
-            >
-              👍 {comment.likes || 0}
-            </button>
+  const renderedComments = comments.map((comment) => {
+    let content;
+    if (comment.status === 'approved') {
+      content = comment.content;
+    } else if (comment.status === 'pending') {
+      content = <em className="text-muted">Comentário aguardando moderação.</em>;
+    } else if (comment.status === 'rejected') {
+      content = <em className="text-danger">Este comentário foi rejeitado.</em>;
+    }
 
-            <button
-              className="btn btn-sm btn-outline-danger"
-              onClick={async () => {
-                try {
-                  await axios.delete(
-                    `http://localhost:4001/posts/${postId}/comments/${comment.id}`
-                  );
-                  fetchData();
-                } catch (err) {
-                  console.error("Erro ao deletar comentário:", err);
-                }
-              }}
-            >
-              ✖
-            </button>
-          </div>
+    return (
+        <li key={comment.id} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+            <div>{content}</div>
+            <div className='d-flex align-items-center'>
+                 <button onClick={() => handleLikeComment(comment.id)} className="btn btn-sm btn-light me-2" title="Curtir">
+                    ❤️ {comment.likes || 0}
+                 </button>
+                 <button onClick={() => handleDeleteComment(comment.id)} className="btn btn-sm btn-light" title="Deletar">
+                    🗑️
+                 </button>
+            </div>
         </li>
-      ))}
-    </ul>
-  );
+    );
+  });
+
+  return <ul className="list-unstyled mt-3">{renderedComments}</ul>;
 };

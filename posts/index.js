@@ -1,3 +1,4 @@
+// posts/index.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -6,47 +7,57 @@ const axios = require('axios');
 
 const prisma = new PrismaClient();
 const app = express();
-
 app.use(bodyParser.json());
 app.use(cors());
 
-// Rota GET posts
-app.get('/posts', async (req, res) => {
-  const posts = await prisma.post.findMany({
-    orderBy: { createdAt: 'desc' }
-  });
-  res.send(posts);
-});
+// --- ROTAS ---
 
-// Rota POST criar post
+// CRIAR POST
 app.post('/posts', async (req, res) => {
-  const { title } = req.body;
+    const { title } = req.body;
+    if (!title) return res.status(400).send({ message: 'Title is required' });
 
-  const post = await prisma.post.create({
-    data: { title }
-  });
-
-  await axios.post('http;//localhost:4005/events', {
-    type: 'PostCreated',
-    data: {
-      id, title
+    try {
+        const post = await prisma.post.create({ data: { title } });
+        await axios.post('http://localhost:4005/events', { type: 'PostCreated', data: post });
+        res.status(201).send(post);
+    } catch (error) {
+        res.status(500).send({ message: 'Error creating post' });
     }
-  })
-
-  res.status(201).send(post);
 });
 
-// Rota DELETE post
+// DELETAR POST
 app.delete('/posts/:id', async (req, res) => {
-  const { id } = req.params;
-
-  await prisma.post.delete({
-    where: { id }
-  });
-
-  res.send({ message: 'Post deletado com sucesso' });
+    try {
+        await prisma.post.delete({ where: { id: req.params.id } });
+        await axios.post('http://localhost:4005/events', { type: 'PostDeleted', data: { id: req.params.id } });
+        res.status(200).send({ message: 'Post deleted' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error deleting post' });
+    }
 });
+
+// CURTIR POST
+app.post('/posts/:id/like', async (req, res) => {
+    try {
+        const post = await prisma.post.update({
+            where: { id: req.params.id },
+            data: { likes: { increment: 1 } }
+        });
+        await axios.post('http://localhost:4005/events', { type: 'PostLiked', data: post });
+        res.status(200).send(post);
+    } catch (error) {
+        res.status(500).send({ message: 'Error liking post' });
+    }
+});
+
+// OUVIR EVENTOS
+app.post('/events', (req, res) => {
+    console.log('[Posts Service] Event Received:', req.body.type);
+    res.send({});
+});
+
 
 app.listen(4000, () => {
-  console.log('Listening on 4000');
+    console.log('Posts Service (v2) rodando na porta 4000');
 });
